@@ -6,6 +6,7 @@ Info
 * http://api.v3project.ru/v5/schema.yaml
 * http://jsonviewer.stack.hu/
 * http://swagger-ui.v3project.ru/#/
+* http://api.v3project.ru/indev.php/v5/product/find?aff_key=
 
 Installation
 ------------

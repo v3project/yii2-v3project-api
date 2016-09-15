@@ -1,0 +1,28 @@
+{
+	"name": "v3toys/yii2-v3project-api",
+	"description": "V3toys yii2 api",
+	"keywords": ["yii", "app", "skeeks", "framework", "api"],
+    "homepage": "http://www.skeeks.com/",
+	"type": "yii2-extension",
+	"license": "BSD-3-Clause",
+	"support": {
+        "issues": "http://www.skeeks.com/",
+        "wiki": "https://github.com/v3toys/yii2-v3project-api",
+        "source": "https://github.com/v3toys/yii2-v3project-api"
+    },
+	"authors": [
+		{
+			"name": "Semenov Alexander",
+			"email": "semenov@skeeks.com"
+		}
+	],
+	"require": {
+		"yiisoft/yii2": "*",
+        "yiisoft/yii2-httpclient": "*"
+	},
+    "autoload": {
+        "psr-4": {
+            "v3toys\\v3project\\api\\": ""
+        }
+    }
+}

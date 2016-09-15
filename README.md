@@ -60,22 +60,28 @@ Examples
 
 ```php
 
-$response = \Yii::$app->v3projectApi->send('method', [
-    'products_ids' => 217070
+$response = \Yii::$app->v3projectApi->send('/product/find', [
+    'filters' =>
+    [
+        'v3p_product_ids' => [3423]
+    ]
 ]);
 
 if ($response->isError)
 {
-    echo $response->error_code;
-    echo $response->error_message;
-}
-
-if ($response->isOk)
+    print_r($response->error_message);
+    print_r($response->error_code);
+    print_r($response->statusCode);
+    print_r($response->requestMethod);
+    print_r($response->requestParams);
+    print_r($response->requestUrl);
+    print_r($response->content);
+    print_r($response->api->version);
+    print_r($response->api->host);
+} else
 {
     print_r($response->data);
 }
-
-print_r($response->statusCode);
 
 ```
 ___

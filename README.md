@@ -1,23 +1,34 @@
-V3toys yii2 api
+New v3project yii2 api
 ===================================
 
-http://www.v3toys.ru/index.php?nid=api
+http://api.v3project.ru/v5/schema.yaml
+http://jsonviewer.stack.hu/
 
 Installation
 ------------
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
+add to composer.json
+```
+"repositories": [
+    {
+        "type": "git",
+        "url":  "https://github.com/v3toys/yii2-v3project-api.git"
+    }
+],
+```
+
 Either run
 
 ```
-php composer.phar require --prefer-dist v3toys/yii2-api "*"
+php composer.phar require --prefer-dist v3toys/yii2-v3project-api "*"
 ```
 
 or add
 
 ```
-"v3toys/yii2-api": "*"
+"v3toys/yii2-v3project-api": "*"
 ```
 
 How to use
@@ -29,10 +40,9 @@ How to use
     'components'    =>
     [
     //....
-        'v3toys' =>
+        'v3projectApi' =>
         [
-            'class'             => '\v3toys\yii2\api\Api',
-            'url'               => 'http://www.v3toys.ru/pear-www/Kiwi_Shop/api.php',
+            'class'             => 'v3toys\v3project\api\Api',
             'affiliate_key'     => 'fff',
             'timeout'           => 12,
         ],
@@ -47,7 +57,7 @@ Examples
 
 ```php
 
-$response = \Yii::$app->v3toys->send('getProductsDataByIds', [
+$response = \Yii::$app->v3projectApi->send('method', [
     'products_ids' => 217070
 ]);
 

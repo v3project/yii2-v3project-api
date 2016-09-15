@@ -5,6 +5,7 @@ Info
 ------------
 * http://api.v3project.ru/v5/schema.yaml
 * http://jsonviewer.stack.hu/
+* http://swagger-ui.v3project.ru/#/
 
 Installation
 ------------

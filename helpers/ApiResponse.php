@@ -7,6 +7,7 @@
  */
 namespace v3toys\v3project\api\helpers;
 
+use v3toys\v3project\api\Api;
 use yii\base\Component;
 
 /**
@@ -20,15 +21,20 @@ use yii\base\Component;
 abstract class ApiResponse extends Component
 {
     /**
-     * @var
-     */
-    public $api;
-
-    /**
-     * вызыванный метод, список приведен далее
      * @var string
      */
-    public $method;
+    public $requestMethod;
+
+    /**
+     * @var string
+     */
+    public $requestUrl;
+
+    /**
+     * @var array
+     */
+    public $requestParams = [];
+
 
     /**
      * данные соответствующие методу запроса
@@ -36,12 +42,22 @@ abstract class ApiResponse extends Component
      */
     public $data;
 
+    /**
+     * @var string Оригинальный ответ апи
+     */
+    public $content;
+
 
     /**
      * Seerver response code
      * @var int
      */
     public $statusCode;
+
+    /**
+     * @var Api
+     */
+    public $api;
 
     /**
      * Ответны запрос ошибочный?

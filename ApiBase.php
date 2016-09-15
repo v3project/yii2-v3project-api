@@ -73,50 +73,50 @@ abstract class ApiBase extends Component
                 ->setUrl($apiUrl)
                 ->addHeaders(['Content-type' => 'application/json'])
                 ->addHeaders(['user-agent' => 'JSON-RPC PHP Client'])
-                ->setData($data)
+                ->setData($params)
                 ->setOptions([
                     'timeout' => $this->timeout
                 ])
             ->send();
         ;
 
-        //Нам сказали это всегда json. А... нет, все мы люди, бывает и не json )
+        $apiResponse = null;
+
         try
         {
             $dataResponse = (array) Json::decode($response->content);
         } catch (\Exception $e)
         {
             \Yii::warning("Json api response error: " . $e->getMessage() . ". Response: \n{$response->content}", self::className());
-            //Лайф хак, вдруг разработчики апи оставили var dump
-            if ($pos = strpos($response->content, "{"))
-            {
-                $content = StringHelper::substr($response->content, $pos, StringHelper::strlen($response->content));
+            $apiResponse = new ApiResponseError();
+            $apiResponse->error_message = $e->getMessage();
+        }
 
-                try
-                {
-                    $dataResponse = (array) Json::decode($content);
-                } catch (\Exception $e)
-                {
-                    \Yii::warning("Api response error: " . $response->content, self::className());
-                }
+
+        if (!$apiResponse)
+        {
+            if (!$response->isOk)
+            {
+                \Yii::error($response->content, self::className());
+                $apiResponse = new ApiResponseError();
+            } else
+            {
+                $apiResponse = new ApiResponseOk();
             }
         }
 
 
-        if (!$response->isOk)
-        {
-            \Yii::error($response->content, self::className());
-            $responseObject = new ApiResponseError($dataResponse);
-        } else
-        {
-            $responseObject = new ApiResponseOk($dataResponse);
-        }
+        $apiResponse->api            = $this;
+        $apiResponse->statusCode     = $response->statusCode;
 
-        $responseObject->statusCode = $response->statusCode;
+        $apiResponse->requestMethod  = $method;
+        $apiResponse->requestParams  = $params;
+        $apiResponse->requestUrl     = $apiUrl;
 
-        return $responseObject;
+        $apiResponse->content        = $response->content;
+        $apiResponse->data           = $dataResponse;
 
-        return $this->_send($request);
+        return $apiResponse;
     }
 
     /**

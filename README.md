@@ -1,8 +1,10 @@
 New v3project yii2 api
 ===================================
 
-http://api.v3project.ru/v5/schema.yaml
-http://jsonviewer.stack.hu/
+Info
+------------
+* http://api.v3project.ru/v5/schema.yaml
+* http://jsonviewer.stack.hu/
 
 Installation
 ------------

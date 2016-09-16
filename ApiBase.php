@@ -8,9 +8,11 @@
 namespace v3toys\v3project\api;
 
 use skeeks\cms\helpers\StringHelper;
+use v3toys\v3project\api\helpers\ApiResponse;
 use v3toys\v3project\api\helpers\ApiResponseError;
 use v3toys\v3project\api\helpers\ApiResponseOk;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\httpclient\Client;
 
@@ -50,6 +52,16 @@ abstract class ApiBase extends Component
      */
     public $timeout = 30;
 
+    /**
+     * Коды ответа на запрос
+     *
+     * @var array
+     */
+    static public $errorStatuses = [
+        '404'   =>  'Запрошенный метод апи не существует',
+        '500'   =>  'Произошла внутренняя ошибка сервиса во время обработки',
+    ];
+
 
 
     /**
@@ -58,9 +70,9 @@ abstract class ApiBase extends Component
      *
      * @return ApiResponseError|ApiResponseOk
      */
-    public function send($method, array $params = [])
+    public function send($apiMethod, array $params = [])
     {
-        $apiUrl = $this->baseUrl . $method . "?aff_key=" . $this->affiliate_key;
+        $apiUrl = $this->baseUrl . $apiMethod . "?aff_key=" . $this->affiliate_key;
 
         $client = new Client([
             'requestConfig' => [
@@ -68,53 +80,24 @@ abstract class ApiBase extends Component
             ]
         ]);
 
-        $response = $client->createRequest()
-                ->setMethod("POST")
-                ->setUrl($apiUrl)
-                ->addHeaders(['Content-type' => 'application/json'])
-                ->addHeaders(['user-agent' => 'JSON-RPC PHP Client'])
-                ->setData($params)
-                ->setOptions([
-                    'timeout' => $this->timeout
-                ])
-            ->send();
-        ;
+        $httpRequest = $client->createRequest()
+                            ->setMethod("POST")
+                            ->setUrl($apiUrl)
+                            ->addHeaders(['Content-type' => 'application/json'])
+                            ->addHeaders(['user-agent' => 'JSON-RPC PHP Client'])
+                            ->setData($params)
+                            ->setOptions([
+                                'timeout' => $this->timeout
+                            ]);
 
-        $apiResponse = null;
+        $httpResponse       = $httpRequest->send();
 
-        try
-        {
-            $dataResponse = (array) Json::decode($response->content);
-        } catch (\Exception $e)
-        {
-            \Yii::warning("Json api response error: " . $e->getMessage() . ". Response: \n{$response->content}", self::className());
-            $apiResponse = new ApiResponseError();
-            $apiResponse->error_message = $e->getMessage();
-        }
-
-
-        if (!$apiResponse)
-        {
-            if (!$response->isOk)
-            {
-                \Yii::error($response->content, self::className());
-                $apiResponse = new ApiResponseError();
-            } else
-            {
-                $apiResponse = new ApiResponseOk();
-            }
-        }
-
-
-        $apiResponse->api            = $this;
-        $apiResponse->statusCode     = $response->statusCode;
-
-        $apiResponse->requestMethod  = $method;
-        $apiResponse->requestParams  = $params;
-        $apiResponse->requestUrl     = $apiUrl;
-
-        $apiResponse->content        = $response->content;
-        $apiResponse->data           = $dataResponse;
+        $apiResponse = new ApiResponse([
+            'api'                   => $this,
+            'httpClientRequest'     => $httpRequest,
+            'httpClientResponse'    => $httpResponse,
+            'apiMethod'             => $apiMethod,
+        ]);
 
         return $apiResponse;
     }
@@ -133,5 +116,16 @@ abstract class ApiBase extends Component
     public function getBaseUrl()
     {
         return $this->schema . $this->host . "/" . $this->version;
+    }
+
+
+    /**
+     * @param $httpStatusCode
+     *
+     * @return string
+     */
+    public function getMessageByStatusCode($httpStatusCode)
+    {
+        return (string) ArrayHelper::getValue(static::$errorStatuses, (string) $httpStatusCode);
     }
 }

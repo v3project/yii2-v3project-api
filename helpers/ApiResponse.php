@@ -9,50 +9,22 @@ namespace v3toys\v3project\api\helpers;
 
 use v3toys\v3project\api\Api;
 use yii\base\Component;
+use yii\httpclient\Request;
+use yii\httpclient\Response;
 
 /**
  * Описание общих полей запросов
  *
- * @property bool isError
- * @property bool isOk
+ * @property bool isOk read-only
  *
  * @package v3toys\v3project\api\helpers
  */
-abstract class ApiResponse extends Component
+class ApiResponse extends Component
 {
     /**
-     * @var string
+     * @var bool Ответ апи считается ошибочным или нет
      */
-    public $requestMethod;
-
-    /**
-     * @var string
-     */
-    public $requestUrl;
-
-    /**
-     * @var array
-     */
-    public $requestParams = [];
-
-
-    /**
-     * данные соответствующие методу запроса
-     * @var mixed
-     */
-    public $data;
-
-    /**
-     * @var string Оригинальный ответ апи
-     */
-    public $content;
-
-
-    /**
-     * Seerver response code
-     * @var int
-     */
-    public $statusCode;
+    public $isError = false;
 
     /**
      * @var Api
@@ -60,10 +32,43 @@ abstract class ApiResponse extends Component
     public $api;
 
     /**
-     * Ответны запрос ошибочный?
-     * @return bool
+     * @var string запрошеный метод апи
      */
-    abstract public function getIsError();
+    public $apiMethod;
+
+    /**
+     * @var Request
+     */
+    public $httpClientRequest;
+
+    /**
+     * @var Response
+     */
+    public $httpClientResponse;
+
+
+    /**
+     * @var array ответ апи с которым и надо работать
+     */
+    public $data;
+
+
+
+    /**
+     * @var string сообщение об ошибке
+     */
+    public $errorMessage = '';
+
+    /**
+     * @var string код об ошибке
+     */
+    public $errorCode;
+
+    /**
+     * @var array данные об ошибке
+     */
+    public $errorData;
+
 
     /**
      * @return bool
@@ -71,5 +76,25 @@ abstract class ApiResponse extends Component
     public function getIsOk()
     {
         return !$this->isError;
+    }
+
+    /**
+     * Небольшая логика обработки ответа
+     */
+    public function init()
+    {
+        $this->data = $this->httpClientResponse->data;
+
+        if (!$this->httpClientResponse->isOk)
+        {
+            \Yii::error($this->httpClientResponse->content, self::className());
+
+            $this->isError       = true;
+            $this->errorMessage  = $this->api->getMessageByStatusCode($this->httpClientResponse->statusCode);
+            $this->errorCode     = $this->httpClientResponse->statusCode;
+            $this->errorData     = $this->data;
+
+            return;
+        }
     }
 }

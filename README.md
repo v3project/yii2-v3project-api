@@ -6,7 +6,6 @@ Info
 * http://api.v3project.ru/v5/schema.yaml
 * http://jsonviewer.stack.hu/
 * http://swagger-ui.v3project.ru/#/
-* http://api.v3project.ru/indev.php/v5/product/find?aff_key=
 
 Installation
 ------------
@@ -62,26 +61,25 @@ Examples
 ```php
 
 $response = \Yii::$app->v3projectApi->send('/product/find', [
-    'filters' =>
-    [
-        'v3p_product_ids' => [3423]
-    ]
+    'products_ids' => 217070
 ]);
+
+print_r($response->httpClientRequest->url);     //Full api url
+print_r($response->httpClientRequest->data);    //Request data
+print_r($response->httpClientRequest->method);  //Request method
+print_r($response->httpClientRequest->headers); //Request headers
+
+print_r($response->httpClientResponse->statusCode); //Server response code
+print_r($response->httpClientResponse->content);    //Original api response
 
 if ($response->isError)
 {
-    print_r($response->error_message);
-    print_r($response->error_code);
-    print_r($response->statusCode);
-    print_r($response->requestMethod);
-    print_r($response->requestParams);
-    print_r($response->requestUrl);
-    print_r($response->content);
-    print_r($response->api->version);
-    print_r($response->api->host);
+    print_r($response->errorMessage); //Расшифровка кода
+    print_r($response->errorData);
+    print_r($response->errorCode);
 } else
 {
-    print_r($response->data);
+    print_r($response->data); //Array response data
 }
 
 ```

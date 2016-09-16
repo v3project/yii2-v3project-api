@@ -15,5 +15,14 @@ class ApiV5 extends ApiBase
 {
     const VERSION = 'v5';
 
-    //api methods
+    /**
+     * Работа с товарам
+     * @param array $params
+     *
+     * @return helpers\ApiResponseError|helpers\ApiResponseOk
+     */
+    public function productFind($params = [])
+    {
+        return $this->send('/product/find', $params);
+    }
 }

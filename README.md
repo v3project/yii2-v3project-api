@@ -61,7 +61,23 @@ Examples
 ```php
 
 $response = \Yii::$app->v3projectApi->send('/product/find', [
-    'products_ids' => 217070
+    'filters' =>
+    [
+        'v3p_product_ids' => [186893]
+    ]
+]);
+
+or
+
+$response = \Yii::$app->v3projectApi->productFind([
+    'filters' =>
+    [
+        'v3p_product_ids' => [186893]
+    ],
+    'params' =>
+    [
+        'format' => 'full'
+    ]
 ]);
 
 print_r($response->httpClientRequest->url);     //Full api url

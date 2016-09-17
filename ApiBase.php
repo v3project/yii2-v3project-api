@@ -53,6 +53,11 @@ abstract class ApiBase extends Component
     public $timeout = 30;
 
     /**
+     * @var bool
+     */
+    public $isDev = false;
+
+    /**
      * Коды ответа на запрос
      *
      * @var array
@@ -68,7 +73,7 @@ abstract class ApiBase extends Component
      * @param $method           вызываемый метод, список приведен далее
      * @param array $params     параметры соответствующие методу запроса
      *
-     * @return ApiResponseError|ApiResponseOk
+     * @return ApiResponse
      */
     public function send($apiMethod, array $params = [])
     {
@@ -115,7 +120,14 @@ abstract class ApiBase extends Component
      */
     public function getBaseUrl()
     {
-        return $this->schema . $this->host . "/" . $this->version;
+        if ($this->isDev)
+        {
+            return $this->schema . $this->host . "/indev.php/" . $this->version;
+        } else
+        {
+            return $this->schema . $this->host . "/" . $this->version;
+        }
+
     }
 
 

@@ -83,7 +83,20 @@ class ApiResponse extends Component
      */
     public function init()
     {
-        $this->data = $this->httpClientResponse->data;
+        try
+        {
+            $this->data = $this->httpClientResponse->data;
+        } catch (\Exception $e)
+        {
+            \Yii::error($this->httpClientResponse->content, self::className());
+
+            $this->isError       = true;
+            $this->errorMessage  = 'Не удалось отформатировать ответ от сервера';
+            $this->errorCode     = $this->httpClientResponse->statusCode;
+            $this->errorData     = $this->data;
+
+            return;
+        }
 
         if (!$this->httpClientResponse->isOk)
         {

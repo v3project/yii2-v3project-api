@@ -50,7 +50,7 @@ abstract class ApiBase extends Component
     /**
      * @var int set timeout to 15 seconds for the case server is not responding
      */
-    public $timeout = 30;
+    public $timeout = 2;
 
     /**
      * @var bool

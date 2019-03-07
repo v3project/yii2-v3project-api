@@ -1,5 +1,5 @@
 {
-	"name": "v3toys/yii2-v3project-api",
+	"name": "v3project/yii2-v3project-api",
 	"description": "V3toys yii2 api",
 	"keywords": ["yii", "app", "skeeks", "framework", "api"],
     "homepage": "http://www.skeeks.com/",
@@ -17,8 +17,8 @@
 		}
 	],
 	"require": {
-		"yiisoft/yii2": "*",
-        "yiisoft/yii2-httpclient": "*"
+		"yiisoft/yii2": "^2.0.16",
+        "yiisoft/yii2-httpclient": "^2.0.0"
 	},
     "autoload": {
         "psr-4": {

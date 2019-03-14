@@ -34,7 +34,7 @@ abstract class ApiBase extends Component
     /**
      * @var string
      */
-    public $schema = 'http://';
+    public $schema = 'https://';
 
     /**
      * @var string
